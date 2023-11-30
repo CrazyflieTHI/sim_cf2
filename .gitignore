@@ -1,0 +1,6 @@
+# VS Code
+.vscode
+
+# Generated multi agent launch file
+crazyflie_gazebo/launch/crazyflie_multi_agent_sim.launch
+
