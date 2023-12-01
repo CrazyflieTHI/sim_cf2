@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <arg name="mav_name" default="crazyflie"/>
+
+    <!-- Settings for the robot description publisher -->
+    <arg name="robot_file" default="crazyflie_base.xacro"/>
+    <!-- Arguments that get passed to xacro file -->
+    <arg name="namespace" default="cf1"/>
+    <arg name="enable_ground_truth" default="false"/>
+    <arg name="enable_wind" default="false"/>
+    <arg name="color_prop_front" default="Blue"/>
+    <arg name="color_prop_back" default="Blue"/>
+    <arg name="rotors_description_dir" default="$(find-pkg-share sim_cf2)/models/rotors_description/"/>
+
+    <include file="$(find-pkg-share sim_cf2)/launch/robot_state_publisher.launch.py">
+        <arg name="namespace" value="$(var namespace)"/>
+        <arg name="robot_file" value="$(var robot_file)"/>
+        <arg name="enable_ground_truth" value="$(var enable_ground_truth)"/>
+        <arg name="enable_wind" value="$(var enable_wind)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front)"/>
+        <arg name="color_prop_back" value="$(var color_prop_back)"/>
+        <arg name="rotors_description_dir" value="$(var rotors_description_dir)"/>
+    </include>
+
+    <include file="$(find-pkg-share sim_cf2)/launch/spawn_in_gazebo.launch.py">
+        <arg name="namespace" value="$(var namespace)"/>
+        <arg name="x_initial" value="$(var x_initial)"/>
+        <arg name="y_initial" value="$(var y_initial)"/>
+        <arg name="z_initial" value="$(var z_initial)"/>
+        <arg name="roll_initial" value="$(var roll_initial)"/>
+        <arg name="pitch_initial" value="$(var pitch_initial)"/>
+        <arg name="yaw_initial" value="$(var yaw_initial)"/>
+    </include>
+
+</launch>

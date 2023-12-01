@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <arg name="mav_name" default="crazyflie"/>
+
+    <!-- General Crazyflie arguments -->
+    <arg name="enable_logging" default="false" />
+    <arg name="enable_parameters" default="false" />
+    <arg name="use_ros_time" default="true" />
+    <arg name="enable_logging_imu" default="false" />
+    <arg name="enable_logging_temperature" default="false" />
+    <arg name="enable_logging_magnetic_field" default="false" />
+    <arg name="enable_logging_pressure" default="false" />
+    <arg name="enable_logging_battery" default="false" />
+    <arg name="enable_logging_packets" default="false" />
+
+    <arg name="cfPrefix" default="cf" />
+
+    <!-- Arguments for Crazyflie 1 -->
+    <arg name="tf_prefix_1" default="$(var cfPrefix)1" />
+    <arg name="color_prop_front_1" default="Green" />
+    <arg name="color_prop_back_1" default="Green" />
+    <arg name="x_1" default="0.5" />
+    <arg name="y_1" default="-0.5" />
+    <arg name="z_1" default="0.03" />
+
+    <!-- Arguments for Crazyflie 2 -->
+    <arg name="tf_prefix_2" default="$(var cfPrefix)2" />
+    <arg name="color_prop_front_2" default="Blue" />
+    <arg name="color_prop_back_2" default="Blue" />
+    <arg name="x_2" default="0.5" />
+    <arg name="y_2" default="0.5" />
+    <arg name="z_2" default="0.03" />
+
+    <!-- Arguments for Crazyflie 3 -->
+    <!-- <arg name="tf_prefix_3" default="$(var cfPrefix)3" />
+    <arg name="color_prop_front_3" default="Turquoise" />
+    <arg name="color_prop_back_3" default="Turquoise" />
+    <arg name="x_3" default="0.0" />
+    <arg name="y_3" default="-0.5" />
+    <arg name="z_3" default="0.03" /> -->
+
+    <!-- Arguments for Crazyflie 4 -->
+    <!-- <arg name="tf_prefix_4" default="$(var cfPrefix)4" />
+    <arg name="color_prop_front_4" default="Red" />
+    <arg name="color_prop_back_4" default="Red" />
+    <arg name="x_4" default="0.0" />
+    <arg name="y_4" default="0.5" />
+    <arg name="z_4" default="0.03" /> -->
+
+    <!-- Arguments for Crazyflie 5 -->
+    <!-- <arg name="tf_prefix_5" default="$(var cfPrefix)5" />
+    <arg name="color_prop_front_5" default="Wood" />
+    <arg name="color_prop_back_5" default="Wood" />
+    <arg name="x_5" default="-0.5" />
+    <arg name="y_5" default="-0.5" />
+    <arg name="z_5" default="0.03" /> -->
+
+    <!-- Arguments for Crazyflie 6 -->
+    <!-- <arg name="tf_prefix_6" default="$(var cfPrefix)6" />
+    <arg name="color_prop_front_6" default="Purple" />
+    <arg name="color_prop_back_6" default="Purple" />
+    <arg name="x_6" default="-0.5" />
+    <arg name="y_6" default="0.5" />
+    <arg name="z_6" default="0.03" /> -->
+
+    <!-- Start Gazebo world -->
+    <include file="$(find-pkg-share sim_cf2)/launch/start_gazebo_world.launch.py"/>
+
+    <arg name="robot_file_sub" default="$(var mav_name)_base.xacro"/>
+
+    <!-- Crazyflie 1 -->
+    <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_1)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_1)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_1)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_1)" />
+        <arg name="x_initial" value="$(var x_1)"/>
+        <arg name="y_initial" value="$(var y_1)"/>
+        <arg name="z_initial" value="$(var z_1)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include>
+
+    <!-- Crazyflie 2 -->
+    <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_2)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_2)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_2)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_2)" />
+        <arg name="x_initial" value="$(var x_2)"/>
+        <arg name="y_initial" value="$(var y_2)"/>
+        <arg name="z_initial" value="$(var z_2)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include>
+
+    <!-- Crazyflie 3 -->
+    <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_3)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_3)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_3)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_3)" />
+        <arg name="x_initial" value="$(var x_3)"/>
+        <arg name="y_initial" value="$(var y_3)"/>
+        <arg name="z_initial" value="$(var z_3)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include> -->
+
+    <!-- Crazyflie 4 -->
+    <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_4)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_4)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_4)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_4)" />
+        <arg name="x_initial" value="$(var x_4)"/>
+        <arg name="y_initial" value="$(var y_4)"/>
+        <arg name="z_initial" value="$(var z_4)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include> -->
+
+    <!-- Crazyflie 5 -->
+    <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_5)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_5)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_5)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_5)" />
+        <arg name="x_initial" value="$(var x_5)"/>
+        <arg name="y_initial" value="$(var y_5)"/>
+        <arg name="z_initial" value="$(var z_5)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include> -->
+
+    <!-- Crazyflie 6 -->
+    <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+        <arg name="namespace" value="$(var tf_prefix_6)"/>
+        <arg name="mav_name" value="$(var mav_name)"/>
+        <arg name="robot_file" value="$(var robot_file_sub)"/>
+        <arg name="tf_prefix" value="$(var tf_prefix_6)"/>
+        <arg name="color_prop_front" value="$(var color_prop_front_6)" />
+        <arg name="color_prop_back" value="$(var color_prop_back_6)" />
+        <arg name="x_initial" value="$(var x_6)"/>
+        <arg name="y_initial" value="$(var y_6)"/>
+        <arg name="z_initial" value="$(var z_6)"/>
+        <arg name="roll_initial" value="0.0"/>
+        <arg name="pitch_initial" value="0.0"/>
+        <arg name="yaw_initial" value="0.0"/>
+    </include> -->
+</launch>
