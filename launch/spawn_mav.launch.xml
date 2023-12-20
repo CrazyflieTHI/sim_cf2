@@ -11,6 +11,8 @@
     <arg name="enable_wind" default="false"/>
     <arg name="color_prop_front" default="Blue"/>
     <arg name="color_prop_back" default="Blue"/>
+    <arg name="enable_mr_deck" default="false"/>
+    <arg name="mr_deck_visualize" default="false"/>
     <arg name="rotors_description_dir" default="$(find-pkg-share sim_cf2)/models/rotors_description/"/>
 
     <include file="$(find-pkg-share sim_cf2)/launch/robot_state_publisher.launch.py">
@@ -20,6 +22,8 @@
         <arg name="enable_wind" value="$(var enable_wind)"/>
         <arg name="color_prop_front" value="$(var color_prop_front)"/>
         <arg name="color_prop_back" value="$(var color_prop_back)"/>
+        <arg name="enable_mr_deck" value="$(var enable_mr_deck)"/>
+        <arg name="mr_deck_visualize" value="$(var mr_deck_visualize)"/>
         <arg name="rotors_description_dir" value="$(var rotors_description_dir)"/>
     </include>
 

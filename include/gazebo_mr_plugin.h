@@ -1,6 +1,17 @@
 /*
- * Author: Thomas Izycki <thomas.izycki2@hs-augsburg.de> 
+ * Copyright 2023 Thomas Izycki, THA, Augsburg
  *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, in version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef _GAZEBO_MR_PLUGIN_HH_
@@ -8,11 +19,11 @@
 
 #include <thread>
 #include <mutex>
-#include "ros/ros.h"
-#include "ros/callback_queue.h"
-#include "ros/subscribe_options.h"
-#include "std_msgs/Float32.h"
-#include <sensor_msgs/Range.h>
+
+#include "rclcpp/rclcpp.hpp"
+
+#include "std_msgs/msg/float32.hpp"
+#include <sensor_msgs/msg/range.hpp>
 
 #include <random>
 
@@ -37,8 +48,7 @@ public:
 	MrPlugin();
 	virtual ~MrPlugin();
 
-    void OnRosMsg(const sensor_msgs::RangeConstPtr &_msg, const int tollerInt);
-    // void OnRosMsg(const sensor_msgs::RangeConstPtr &_msg);
+    void OnRosMsg(const sensor_msgs::msg::Range::SharedPtr _msg, const int sensorId);
 
 protected:
 	virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
@@ -46,9 +56,7 @@ protected:
 
 private:
     void CreatePubsAndSubs();
-    void IncSensorQueueThread();
-
-    // std::mutex sensorDataMutex;
+    void rosHelper();
 
     std::string namespace_;
 
@@ -67,27 +75,20 @@ private:
 
 	multi_ranger_sensor_data::msgs::MrSensorData mrMsg;
 
-
     bool sensorDataRdy[4] = {false, false, false, false};
     bool sendSensorData = false;
 
-    // Gazebo publisher
 	transport::PublisherPtr mr_pub_;
 
-    // A node use for ROS transport
-    std::unique_ptr<ros::NodeHandle> rosNode;
+    std::shared_ptr<rclcpp::Node> rosNode;
 
-    // A ROS subscriber
-    ros::Subscriber rosSubSensorFront;
-    ros::Subscriber rosSubSensorBack;
-    ros::Subscriber rosSubSensorLeft;
-    ros::Subscriber rosSubSensorRight;
+    // ROS2 subscriber
+    rclcpp::Subscription<sensor_msgs::msg::Range>::SharedPtr rosSubSensorFront;
+    rclcpp::Subscription<sensor_msgs::msg::Range>::SharedPtr rosSubSensorBack;
+    rclcpp::Subscription<sensor_msgs::msg::Range>::SharedPtr rosSubSensorLeft;
+    rclcpp::Subscription<sensor_msgs::msg::Range>::SharedPtr rosSubSensorRight;
 
-    // A ROS callback queue that helps process messages
-    ros::CallbackQueue rosQueue;
-
-    // A thread the keeps running the rosQueue
-    std::thread rosQueueThread;
+    std::thread rosRangeMsgThread;
 
 };
 

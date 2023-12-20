@@ -249,6 +249,7 @@ void GazeboCfHandlerPlugin::initializeSubsAndPub()
     magnetic_field_sub_ = node_handle_->Subscribe(namespace_ + magnetic_field_topic_, &GazeboCfHandlerPlugin::MagneticFieldCallback, this);
     fluid_pressure_sub_ = node_handle_->Subscribe(namespace_ + fluid_pressure_topic_, &GazeboCfHandlerPlugin::FluidPressureCallback, this);
     lps_sub_ = node_handle_->Subscribe(namespace_ + lps_topic_, &GazeboCfHandlerPlugin::LpsCallback, this);
+    mr_sub_ = node_handle_->Subscribe(namespace_ + mr_topic_, &GazeboCfHandlerPlugin::MrCallback, this);
 
     motor_velocity_reference_pub_ = node_handle_->Advertise<gz_mav_msgs::CommandMotorSpeed>(namespace_ + motor_velocity_reference_pub_topic_, 1);
 
@@ -330,6 +331,24 @@ void GazeboCfHandlerPlugin::LpsCallback(LpsMsgPtr& lps_msg)
 
     mempcpy(&p.data[0], &pos, sizeof(Axis3f));
 	m_queueSend.enqueue(p);
+}
+
+void GazeboCfHandlerPlugin::MrCallback(MrMsgPtr& mr_msg)
+{
+    crtpPacket_t p;
+
+    p.header = CRTP_HEADER(CRTP_PORT_SETPOINT_SIM, 0);
+    p.data[0] = SENSOR_MR_SIM;
+
+	float mr[4] = {
+		static_cast<float>(mr_msg->front()),
+		static_cast<float>(mr_msg->back()),
+		static_cast<float>(mr_msg->left()),
+		static_cast<float>(mr_msg->right())
+	};
+
+    mempcpy(&p.data[1], &mr, sizeof(mr));
+    m_queueSend.enqueue(p);
 }
 
 void GazeboCfHandlerPlugin::writeMotors()

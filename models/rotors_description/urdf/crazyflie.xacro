@@ -35,6 +35,36 @@
   <xacro:property name="rotor_drag_coefficient" value="9.1785e-7" />
   <xacro:property name="rolling_moment_coefficient" value="0.0000001" />
 
+  <!-- Multi-ranger deck -->
+  <xacro:property name="expansion_deck_offset" value="0.018" />
+  <xacro:property name="mr_deck_width" value="0.025" />
+  <xacro:property name="mr_deck_length" value="0.025" />
+  <xacro:property name="mr_deck_height" value="0.002" />
+  <xacro:property name="mr_deck_color" value="Black" />
+  <xacro:property name="sensor_box_offset" value="0.002" />
+  <xacro:property name="sensor_offset" value="0.005" />
+  <xacro:property name="sensor_box_yaw_front" value="0.0" />
+  <xacro:property name="sensor_box_yaw_back" value="3.14159" />
+  <xacro:property name="sensor_box_yaw_left" value="1.5708" />
+  <xacro:property name="sensor_box_yaw_right" value="-1.5708" />
+  <xacro:property name="mr_sensor_length" value="0.001" />
+  <xacro:property name="mr_sensor_width" value="0.01" />
+  <xacro:property name="mr_sensor_height" value="0.005" />
+  <xacro:property name="mr_sensor_trans_x_front" value="0.01" />
+  <xacro:property name="mr_sensor_trans_y_front" value="0.0" />
+  <xacro:property name="mr_sensor_trans_x_back" value="-0.01" />
+  <xacro:property name="mr_sensor_trans_y_back" value="0.0" />
+  <xacro:property name="mr_sensor_trans_x_left" value="0.0" />
+  <xacro:property name="mr_sensor_trans_y_left" value="0.01" />
+  <xacro:property name="mr_sensor_trans_x_right" value="0.0" />
+  <xacro:property name="mr_sensor_trans_y_right" value="-0.01" />
+  <xacro:property name="mr_sensor_color_front" value="Red" />
+  <xacro:property name="mr_sensor_color_back" value="Blue" />
+  <xacro:property name="mr_sensor_color_left" value="Green" />
+  <xacro:property name="mr_sensor_color_right" value="Yellow" />
+  <xacro:property name="mr_sensor_color_right" value="Yellow" />
+  <xacro:property name="mr_deck_visualize" value="$(arg mr_deck_visualize)" />
+
   <!-- Property Blocks -->
   <xacro:property name="body_inertia">
      <inertia ixx="1.657171e-5" ixy="0.830806e-6" ixz="0.718277e-6" iyy="1.6655602e-5" iyz="1.800197e-6" izz="2.9261652e-5" /> <!-- [kg.m^2] [kg.m^2] [kg.m^2] [kg.m^2] [kg.m^2] [kg.m^2] -->
@@ -154,4 +184,73 @@
     <origin xyz="-${arm_length_back_x} -${arm_length_back_y} ${rotor_offset_top}" rpy="0 0 0" />
     <xacro:insert_block name="rotor_inertia" />
   </xacro:vertical_rotor>
+
+  <!-- Instantiate multi-ranger deck consisting
+       of a plane and four range sensors -->
+  <xacro:if value="${enable_mr_deck}">
+  <xacro:multiranger_deck_base
+    robot_namespace="${namespace}"
+    expansion_deck_offset="${expansion_deck_offset}"
+    mr_deck_width="${mr_deck_width}"
+    mr_deck_length="${mr_deck_length}"
+    mr_deck_height="${mr_deck_height}"
+    mr_deck_color="${mr_deck_color}">
+  </xacro:multiranger_deck_base>
+
+  <xacro:mr_range_sensor robot_namespace="${namespace}"
+    sensor_location="front"
+    sensor_box_offset="${sensor_box_offset}"
+    sensor_box_yaw="${sensor_box_yaw_front}"
+    trans_x="${mr_sensor_trans_x_front}"
+    trans_y="${mr_sensor_trans_y_front}"
+    sensor_length="${mr_sensor_length}"
+    sensor_width="${mr_sensor_width}"
+    sensor_height="${mr_sensor_height}"
+    sensor_offset="${sensor_offset}"
+    mr_sensor_color="${mr_sensor_color_front}"
+    visualize_ray="${mr_deck_visualize}">
+  </xacro:mr_range_sensor>
+
+  <xacro:mr_range_sensor robot_namespace="${namespace}"
+    sensor_location="back"
+    sensor_box_offset="${sensor_box_offset}"
+    sensor_box_yaw="${sensor_box_yaw_back}"
+    trans_x="${mr_sensor_trans_x_back}"
+    trans_y="${mr_sensor_trans_y_back}"
+    sensor_length="${mr_sensor_length}"
+    sensor_width="${mr_sensor_width}"
+    sensor_height="${mr_sensor_height}"
+    sensor_offset="${sensor_offset}"
+    mr_sensor_color="${mr_sensor_color_back}"
+    visualize_ray="${mr_deck_visualize}">
+  </xacro:mr_range_sensor>
+
+  <xacro:mr_range_sensor robot_namespace="${namespace}"
+    sensor_location="left"
+    sensor_box_offset="${sensor_box_offset}"
+    sensor_box_yaw="${sensor_box_yaw_left}"
+    trans_x="${mr_sensor_trans_x_left}"
+    trans_y="${mr_sensor_trans_y_left}"
+    sensor_length="${mr_sensor_length}"
+    sensor_width="${mr_sensor_width}"
+    sensor_height="${mr_sensor_height}"
+    sensor_offset="${sensor_offset}"
+    mr_sensor_color="${mr_sensor_color_left}"
+    visualize_ray="${mr_deck_visualize}">
+  </xacro:mr_range_sensor>
+
+  <xacro:mr_range_sensor robot_namespace="${namespace}"
+    sensor_location="right"
+    sensor_box_offset="${sensor_box_offset}"
+    sensor_box_yaw="${sensor_box_yaw_right}"
+    trans_x="${mr_sensor_trans_x_right}"
+    trans_y="${mr_sensor_trans_y_right}"
+    sensor_length="${mr_sensor_length}"
+    sensor_width="${mr_sensor_width}"
+    sensor_height="${mr_sensor_height}"
+    sensor_offset="${sensor_offset}"
+    mr_sensor_color="${mr_sensor_color_right}"
+    visualize_ray="${mr_deck_visualize}">
+  </xacro:mr_range_sensor>
+  </xacro:if>
 </robot> 

@@ -18,6 +18,8 @@ def launch_setup(context, *args, **kwargs):
     color_prop_front = LaunchConfiguration('color_prop_front').perform(context)
     color_prop_back = LaunchConfiguration('color_prop_back').perform(context)
     rotors_description_dir = LaunchConfiguration('rotors_description_dir').perform(context)
+    enable_mr_deck = LaunchConfiguration('enable_mr_deck').perform(context)
+    mr_deck_visualize = LaunchConfiguration('mr_deck_visualize').perform(context)
     robot_description_topic_name = "/" + namespace + "_robot_description"
     robot_state_publisher_name = namespace +  "_robot_state_publisher"
     joint_state_topic_name = "/" + namespace + "/joint_states"
@@ -30,6 +32,8 @@ def launch_setup(context, *args, **kwargs):
                                                                'enable_wind' : enable_wind,
                                                                'color_prop_front' : color_prop_front,
                                                                'color_prop_back' : color_prop_back,
+                                                               'enable_mr_deck' : enable_mr_deck,
+                                                               'mr_deck_visualize' : mr_deck_visualize,
                                                                'rotors_description_dir' : rotors_description_dir})
     xml = robot_desc.toxml()
 
@@ -54,6 +58,8 @@ def generate_launch_description():
     enable_wind_arg = DeclareLaunchArgument('enable_wind', default_value='false')
     color_prop_front_arg = DeclareLaunchArgument('color_prop_front', default_value='Black')
     color_prop_back_arg = DeclareLaunchArgument('color_prop_back', default_value='Black')
+    enable_mr_deck_arg = DeclareLaunchArgument('enable_mr_deck', default_value='false')
+    mr_deck_visualize_arg = DeclareLaunchArgument('mr_deck_visualize', default_value='false')
     rotors_description_dir_arg = DeclareLaunchArgument('rotors_description_dir', default_value='')
     return LaunchDescription([
         namespace_arg,
@@ -62,6 +68,8 @@ def generate_launch_description():
         enable_wind_arg,
         color_prop_front_arg,
         color_prop_back_arg,
+        enable_mr_deck_arg,
+        mr_deck_visualize_arg,
         rotors_description_dir_arg,
         OpaqueFunction(function = launch_setup)
         ])

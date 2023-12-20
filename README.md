@@ -155,3 +155,35 @@ Delete the queues
 ```sh
 sudo rm /dev/mqueue/<sim_cf2_queues>
 ```
+
+## Experimental Multi-Ranger Deck
+
+An experimental Multi-ranger deck can be used in the simulation. It consists of four *Hokuyo* range sensors mounted on a rigid platform attached on top of the Crazyflie.
+
+### Enable the Multi-ranger Deck
+
+To use the Multi-ranger deck, enable it in the *main.launch.xml* file for every Crazyflie individually.
+
+```xml
+<arg name="enable_mr_deck_1" default="true" />
+<arg name="mr_deck_visualize_1" default="true" />
+```
+
+By setting `mr_deck_visualize_` to `true` the laser ray will be visualized.
+
+### Run Wall Following Example
+
+With the simulated Multi-ranger deck, Bitcraze's wall following example can be run. Load a world that contains walls, such as *lab_aux.world*, by specifying the world name in *start_gazebo_world.launch.py*
+
+```python
+def generate_launch_description():
+    world_file_name = 'lab_aux.world' # Select world from worlds folder
+    package_name = "sim_cf2"
+    ...
+```
+
+A slightly modified version of the wall following example script is located in https://github.com/CrazyflieTHI/crazyflie-lib-python/tree/master/examples/sim_cf2
+
+Start the Gazebo Simulation, an instance of the firmware SITL and run the example.
+
+![gazebo_successfully_spawned_entities](images/gazebo_walfollower_example.png)

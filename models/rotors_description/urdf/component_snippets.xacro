@@ -203,6 +203,19 @@
     </gazebo>
   </xacro:macro>
 
+  <!-- Macro to add the mr_plugin. -->
+  <xacro:if value="${enable_mr_deck}">
+    <xacro:macro name="mr_plugin_macro" params="namespace rate">
+      <gazebo>
+        <plugin name="mr_plugin" filename="librotors_gazebo_mr_plugin.so">
+          <robotNamespace>${namespace}</robotNamespace>
+          <rate>${rate}</rate>
+          <visualize_ray>${mr_deck_visualize}</visualize_ray>
+        </plugin>
+      </gazebo>
+    </xacro:macro>
+  </xacro:if>
+
   <!-- Macro to add a generic odometry sensor. -->
   <xacro:macro name="odometry_plugin_macro"
     params="

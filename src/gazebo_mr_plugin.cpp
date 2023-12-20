@@ -1,8 +1,21 @@
-#include "gazebo_mr_plugin.h"
-#include <ros/ros.h>
+/*
+ * Copyright 2023 Thomas Izycki, THA, Augsburg
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, in version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-// USER HEADERS
-#include "ConnectGazeboToRosTopic.pb.h"
+#include "gazebo_mr_plugin.h"
+
 
 namespace gazebo {
     GZ_REGISTER_MODEL_PLUGIN(MrPlugin)
@@ -23,63 +36,57 @@ namespace gazebo {
 
 		namespace_.clear();
 
+        if (_sdf->HasElement("robotNamespace"))
+            namespace_ = _sdf->GetElement("robotNamespace")->Get<std::string>();
+        else
+            gzerr << "[gazebo_imu_plugin] Please specify a robotNamespace.\n";
         node_handle_ = transport::NodePtr(new transport::Node());
-		node_handle_->Init(namespace_);
+        node_handle_->Init(namespace_);
 
-		// Listen to the update event. This event is broadcast every simulation iteration.
 		updateConnection_ = event::Events::ConnectWorldUpdateBegin(boost::bind(&MrPlugin::OnUpdate, this, _1));
 
-        // From https://classic.gazebosim.org/tutorials?tut=guided_i6
-        // Create our ROS node. This acts in a similar manner to the Gazebo node
-        this->rosNode.reset(new ros::NodeHandle("gazebo_client"));
+        rosNode = std::make_shared<rclcpp::Node>(namespace_ + "_mr_plugin_ros2_node");
 
-        // Create named topics for the four range sensors, and subscribe to them
-        ros::SubscribeOptions mrSensorFront =
-        ros::SubscribeOptions::create<sensor_msgs::Range>(
-            "/" + this->model_->GetName() + "/ros/sensor_front",
-            1,
-            boost::bind(&MrPlugin::OnRosMsg, this, _1, sensorIdFront),
-            ros::VoidPtr(),
-            &this->rosQueue);
-        this->rosSubSensorFront = this->rosNode->subscribe(mrSensorFront);
+        rosSubSensorFront = rosNode->create_subscription<sensor_msgs::msg::Range>(
+                                "/" + namespace_ + "/front/range",
+                                1,
+                                [this](const sensor_msgs::msg::Range::SharedPtr _msg) {
+                                OnRosMsg(_msg, sensorIdFront);
+        });
 
-        ros::SubscribeOptions mrSensorBack =
-        ros::SubscribeOptions::create<sensor_msgs::Range>(
-            "/" + this->model_->GetName() + "/ros/sensor_back",
-            1,
-            boost::bind(&MrPlugin::OnRosMsg, this, _1, sensorIdBack),
-            ros::VoidPtr(),
-            &this->rosQueue);
-        this->rosSubSensorBack = this->rosNode->subscribe(mrSensorBack);
+        rosSubSensorBack = rosNode->create_subscription<sensor_msgs::msg::Range>(
+                                "/" + namespace_ + "/back/range",
+                                1,
+                                [this](const sensor_msgs::msg::Range::SharedPtr _msg) {
+                                OnRosMsg(_msg, sensorIdBack);
+        });
 
-        ros::SubscribeOptions mrSensorLeft =
-        ros::SubscribeOptions::create<sensor_msgs::Range>(
-            "/" + this->model_->GetName() + "/ros/sensor_left",
-            1,
-            boost::bind(&MrPlugin::OnRosMsg, this, _1, sensorIdLeft),
-            ros::VoidPtr(),
-            &this->rosQueue);
-        this->rosSubSensorLeft = this->rosNode->subscribe(mrSensorLeft);
+        rosSubSensorLeft = rosNode->create_subscription<sensor_msgs::msg::Range>(
+                                "/" + namespace_ + "/left/range",
+                                1,
+                                [this](const sensor_msgs::msg::Range::SharedPtr _msg) {
+                                OnRosMsg(_msg, sensorIdLeft);
+        });
 
-        ros::SubscribeOptions mrSensorRight =
-        ros::SubscribeOptions::create<sensor_msgs::Range>(
-            "/" + this->model_->GetName() + "/ros/sensor_right",
-            1,
-            boost::bind(&MrPlugin::OnRosMsg, this, _1, sensorIdRight),
-            ros::VoidPtr(),
-            &this->rosQueue);
-        this->rosSubSensorRight = this->rosNode->subscribe(mrSensorRight);
+        rosSubSensorRight = rosNode->create_subscription<sensor_msgs::msg::Range>(
+                                "/" + namespace_ + "/right/range",
+                                1,
+                                [this](const sensor_msgs::msg::Range::SharedPtr _msg) {
+                                OnRosMsg(_msg, sensorIdRight);
+        });
 
-        // Spin up the queue helper thread
-        this->rosQueueThread =
-        std::thread(std::bind(&MrPlugin::IncSensorQueueThread, this));
+        this->rosRangeMsgThread = std::thread(std::bind(&MrPlugin::rosHelper, this));
 
-	    ROS_INFO("Multi-ranger plugin loaded.");
+	    std::cout << "Multi-ranger plugin loaded." << std::endl;
     }
 
-    // Handle an incoming message from ROS
-    void MrPlugin::OnRosMsg(const sensor_msgs::RangeConstPtr &_msg, const int sensorId)
+    /* Handle incoming range messages from ROS */
+    void MrPlugin::OnRosMsg(const sensor_msgs::msg::Range::SharedPtr _msg, const int sensorId)
     {
+        // std::cout << sensorId << ": " << _msg->range << std::endl;
+        if(_msg->range > 4.0)
+            _msg->range = 4.0;
+
         if(!sensorDataRdy[sensorId])
         {
             if(sensorId == 0)
@@ -108,14 +115,10 @@ namespace gazebo {
         }
     }
 
-    // ROS helper function that processes messages
-    void MrPlugin::IncSensorQueueThread()
+    void MrPlugin::rosHelper()
     {
-        static const double timeout = 0.01;
-        while (this->rosNode->ok())
-        {
-            this->rosQueue.callAvailable(ros::WallDuration(timeout));
-        }
+        rclcpp::spin(rosNode);
+        rclcpp::shutdown();
     }
 
     void MrPlugin::OnUpdate(const common::UpdateInfo&)
@@ -140,10 +143,9 @@ namespace gazebo {
 
     void MrPlugin::CreatePubsAndSubs()
     {
-	    ROS_INFO("Multi-ranger: Created subscriber.");
-        // ROS_INFO_STREAM(model_->GetName());
-		mr_pub_ = node_handle_->Advertise<multi_ranger_sensor_data::msgs::MrSensorData>(model_->GetName() + "/gazebo/mr", 1);
+        std::cout << "Created pubs and subs " << std::endl;
 
+		mr_pub_ = node_handle_->Advertise<multi_ranger_sensor_data::msgs::MrSensorData>(
+            namespace_ + "/gazebo/mr", 1);
     }
-
 }

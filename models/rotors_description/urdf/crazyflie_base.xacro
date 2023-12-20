@@ -16,6 +16,7 @@
   <xacro:arg name='allow_collision' default='true' />
 
   <xacro:property name="enable_ground_truth" value="$(arg enable_ground_truth)" />
+  <xacro:property name="enable_mr_deck" value="$(arg enable_mr_deck)" />
 
   <xacro:include filename="$(arg rotors_description_dir)/urdf/component_snippets.xacro"/>
 
@@ -96,6 +97,13 @@
     lps_std_dev="0.0"
     rate="100">
   </xacro:lps_plugin_macro>
+
+  <xacro:if value="${enable_mr_deck}">
+    <xacro:mr_plugin_macro
+      namespace="${namespace}"
+      rate="100">
+    </xacro:mr_plugin_macro>
+  </xacro:if>
 
   <xacro:if value="${enable_ground_truth}">
     <!-- Odometry Sensor -->
