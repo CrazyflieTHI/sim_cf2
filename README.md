@@ -72,9 +72,9 @@ colcon build
 
 Running the simulation requires
 
-* *sim_cf* package built
+* *sim_cf2* package built
 * Crazyflie firmware compiled for SITL
-* Crazyflie python library installed containing the *simlink* driver (on simlink branch)
+* Crazyflie python library installed containing the *simlink* driver
 
 ### Add Path to Crazyflie Firmware Executable
 
@@ -103,19 +103,19 @@ Use the ROS2 launch command to start the *sim_cf2* simulation
 ros2 launch sim_cf2 main.launch.xml
 ```
 
-Gazebo will start in paused mode and trying to establish a connection to the software-in-the-loop Crazyflie firmware instances.
+Gazebo will start in paused mode and will try to establish a connection to the software-in-the-loop Crazyflie firmware instances.
 
 ![gazebo_successfully_spawned_entities](images/gazebo_successfully_spawned_entities.png)
 
 ### 2. Run Crazyflie Firmware SITL Instances
 
-Open a new terminal and move to the scripts folder of the *2sim_cf2* repository (assuming ~/dev_ws/src/sim_cf2)
+Open a new terminal and move to the scripts folder of the *sim_cf2* repository (assuming ~/dev_ws/src/sim_cf2)
 
 ```sh
 cd ~/dev_ws/src/sim_cf2/scripts
 ```
 
-Run the *run_cfs.sh* script with as many instances of simulated Crazyflies as needed by providing the amount of Crazyflies as argument (two by default)
+Run the *run_cfs.sh* script with as many instances of simulated Crazyflies as needed by providing the amount of Crazyflies as argument (e.g. two)
 ```sh
 ./run_cfs.sh 2
 ```
@@ -128,7 +128,7 @@ The SITL instances will establish a connection to Gazebo
 
 ### 3. Run a Python Script
 
-Start your *cflib*-based python script with activated *simlink* driver. Example scripts can be found in the Crazyflie python library with additional *simlink* driver https://github.com/CrazyflieTHI/crazyflie-lib-python/tree/master/examples/sim_cf2
+Start your *cflib*-based python script with activated *simlink* driver. Example scripts can be found in the Crazyflie python library https://github.com/CrazyflieTHI/crazyflie-lib-python/tree/master/examples/sim_cf2
 
 Run for example the autonomousSequence.py script
 
