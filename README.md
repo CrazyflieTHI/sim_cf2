@@ -76,13 +76,6 @@ Running the simulation requires
 * Crazyflie firmware compiled for SITL
 * Crazyflie python library installed containing the *simlink* driver
 
-### Add Path to Crazyflie Firmware Executable
-
-Open the *run_cfs.sh* script located in *sim_cf2/scripts* and add the path to the *cf2.elf* in your crazyflie-firmware repository
-
-![run_cf_script_path_to_executable](images/add_path_to_cf_executable.png)
-
-
 ### Adjust the Launch Script
 
 The number of simulated Crazyflies is determined by the main launch file *main.launch.xml* in the *sim_cf2/launch* folder. By default, two Crazyflies are simulated and code for the instantiation of four further Crazyflies is present but commented out. Adjust the launch file to your needs by adding or removing Crazyflies. Initial pose and rotor color is set in the *main.launch.xml* file.
@@ -109,13 +102,14 @@ Gazebo will start in paused mode and will try to establish a connection to the s
 
 ### 2. Run Crazyflie Firmware SITL Instances
 
-Open a new terminal and move to the scripts folder of the *sim_cf2* repository (assuming ~/dev_ws/src/sim_cf2)
+Open a new terminal and move to the scripts/sim_cf2 folder in the Crazyflie firmware repository (assuming ~/repos/crazyflie-firmware)
 
 ```sh
-cd ~/dev_ws/src/sim_cf2/scripts
+cd ~/repos/crazyflie-firmware/scripts/sim_cf2
 ```
 
 Run the *run_cfs.sh* script with as many instances of simulated Crazyflies as needed by providing the amount of Crazyflies as argument (e.g. two)
+
 ```sh
 ./run_cfs.sh 2
 ```
