@@ -91,7 +91,7 @@
     </include>
 
     <!-- Crazyflie 2 -->
-    <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
+    <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">
         <arg name="namespace" value="$(var tf_prefix_2)"/>
         <arg name="mav_name" value="$(var mav_name)"/>
         <arg name="robot_file" value="$(var robot_file_sub)"/>
@@ -106,7 +106,7 @@
         <arg name="yaw_initial" value="0.0"/>
         <arg name="enable_mr_deck" value="$(var enable_mr_deck_2)"/>
         <arg name="mr_deck_visualize" value="$(var mr_deck_visualize_2)"/>
-    </include>
+    </include> -->
 
     <!-- Crazyflie 3 -->
     <!-- <include file="$(find-pkg-share sim_cf2)/launch/spawn_mav.launch.xml">

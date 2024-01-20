@@ -105,6 +105,10 @@
     </xacro:mr_plugin_macro>
   </xacro:if>
 
+  <xacro:tdoa_plugin_macro
+    namespace="${namespace}">
+  </xacro:tdoa_plugin_macro>
+
   <xacro:if value="${enable_ground_truth}">
     <!-- Odometry Sensor -->
     <xacro:odometry_plugin_macro

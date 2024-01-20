@@ -1,0 +1,16 @@
+syntax = "proto2";
+package gz_sensor_msgs;
+
+import "Header.proto";
+import "vector3d.proto";
+
+// Message published by GazeboTdoaPlugin.
+message Tdoa
+{
+  required gz_std_msgs.Header header = 1;
+  required gazebo.msgs.Vector3d anchor_position_a = 2;
+  required gazebo.msgs.Vector3d anchor_position_b = 3;
+  required float distance_difference = 4;
+  required uint32 anchor_id_a = 5;
+  required uint32 anchor_id_b = 6;
+}

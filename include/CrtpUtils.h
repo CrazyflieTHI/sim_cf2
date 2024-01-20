@@ -28,6 +28,7 @@ enum SensorTypeSim_e {
   SENSOR_BARO_SIM               = 2,
   SENSOR_POS_SIM				= 3,
   SENSOR_MR_SIM					= 4,
+  SENSOR_TDOA_SIM               = 5,
 };
 
 union Axis3i16 {

@@ -250,6 +250,7 @@ void GazeboCfHandlerPlugin::initializeSubsAndPub()
     fluid_pressure_sub_ = node_handle_->Subscribe(namespace_ + fluid_pressure_topic_, &GazeboCfHandlerPlugin::FluidPressureCallback, this);
     lps_sub_ = node_handle_->Subscribe(namespace_ + lps_topic_, &GazeboCfHandlerPlugin::LpsCallback, this);
     mr_sub_ = node_handle_->Subscribe(namespace_ + mr_topic_, &GazeboCfHandlerPlugin::MrCallback, this);
+    tdoa_sub_ = node_handle_->Subscribe(namespace_ + tdoa_topic_, &GazeboCfHandlerPlugin::TdoaCallback, this);
 
     motor_velocity_reference_pub_ = node_handle_->Advertise<gz_mav_msgs::CommandMotorSpeed>(namespace_ + motor_velocity_reference_pub_topic_, 1);
 
@@ -317,6 +318,7 @@ void GazeboCfHandlerPlugin::FluidPressureCallback(FluidPressureMsgPtr& press_msg
 
 void GazeboCfHandlerPlugin::LpsCallback(LpsMsgPtr& lps_msg)
 {
+    return;
     crtpPacket_t p;
 
     /* The position data is not treated as sensor data in the firmware.
@@ -348,6 +350,30 @@ void GazeboCfHandlerPlugin::MrCallback(MrMsgPtr& mr_msg)
 	};
 
     mempcpy(&p.data[1], &mr, sizeof(mr));
+    m_queueSend.enqueue(p);
+}
+
+void GazeboCfHandlerPlugin::TdoaCallback(TdoaMsgPtr& tdoa_msg)
+{
+    crtpPacket_t p;
+
+    p.header = CRTP_HEADER(CRTP_PORT_SETPOINT_SIM, 0);
+    p.data[0] = SENSOR_TDOA_SIM;
+
+    Axis3f pos_anchor_0 = {static_cast<float>(tdoa_msg->anchor_position_a().x()),
+                           static_cast<float>(tdoa_msg->anchor_position_a().y()),
+                           static_cast<float>(tdoa_msg->anchor_position_a().z())};
+    Axis3f pos_anchor_1 = {static_cast<float>(tdoa_msg->anchor_position_b().x()),
+                           static_cast<float>(tdoa_msg->anchor_position_b().y()),
+                           static_cast<float>(tdoa_msg->anchor_position_b().z())};
+    float distDiff = static_cast<float>(tdoa_msg->distance_difference());
+    uint32_t anchorIdA = static_cast<uint32_t>(tdoa_msg->anchor_id_a());
+    uint32_t anchorIdB = static_cast<uint32_t>(tdoa_msg->anchor_id_b());
+
+    mempcpy(&p.data[1], &pos_anchor_0, sizeof(Axis3f));
+    mempcpy(&p.data[1+sizeof(Axis3f)], &pos_anchor_1, sizeof(Axis3f));
+    mempcpy(&p.data[1+2*sizeof(Axis3f)], &distDiff, sizeof(float));
+    p.data[29] = (anchorIdA << 4) | (anchorIdB & 0x0F);
     m_queueSend.enqueue(p);
 }
 

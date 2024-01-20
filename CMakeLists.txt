@@ -207,7 +207,7 @@ ament_target_dependencies(rotors_gazebo_lps_plugin
   sensor_msgs
 )
 
-add_library(rotors_gazebo_wind_plugin SHARED src/gazebo_lps_plugin.cpp)
+add_library(rotors_gazebo_wind_plugin SHARED src/gazebo_wind_plugin.cpp)
 include_directories(include)
 target_link_libraries(rotors_gazebo_wind_plugin simcf_msgs)
 ament_target_dependencies(rotors_gazebo_wind_plugin
@@ -251,6 +251,19 @@ add_library(gazebo_gps_plugin SHARED src/gazebo_gps_plugin.cpp)
 include_directories(include)
 target_link_libraries(gazebo_gps_plugin simcf_msgs)
 ament_target_dependencies(gazebo_gps_plugin
+  rclcpp
+  rmw_cyclonedds_cpp
+  std_msgs
+  tf2_ros
+  mav_msgs
+  geometry_msgs
+  sensor_msgs
+)
+
+add_library(rotors_gazebo_tdoa_plugin SHARED src/gazebo_tdoa_plugin.cpp)
+include_directories(include)
+target_link_libraries(rotors_gazebo_tdoa_plugin simcf_msgs)
+ament_target_dependencies(rotors_gazebo_tdoa_plugin
   rclcpp
   rmw_cyclonedds_cpp
   std_msgs
@@ -347,6 +360,9 @@ install(TARGETS gazebo_sonar_plugin
   DESTINATION lib)
 
 install(TARGETS gazebo_gps_plugin
+  DESTINATION lib)
+
+install(TARGETS rotors_gazebo_tdoa_plugin
   DESTINATION lib)
 
 install(TARGETS gazebo_cf_handler_plugin

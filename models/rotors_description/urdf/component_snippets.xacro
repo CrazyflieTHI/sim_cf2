@@ -216,6 +216,15 @@
     </xacro:macro>
   </xacro:if>
 
+  <!-- Macro to add the tdoa_plugin. -->
+  <xacro:macro name="tdoa_plugin_macro" params="namespace">
+    <gazebo>
+      <plugin name="tdoa_plugin" filename="librotors_gazebo_tdoa_plugin.so">
+        <robotNamespace>${namespace}</robotNamespace>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
   <!-- Macro to add a generic odometry sensor. -->
   <xacro:macro name="odometry_plugin_macro"
     params="

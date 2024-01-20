@@ -49,6 +49,7 @@
 #include <MagneticField.pb.h>
 #include <FluidPressure.pb.h>
 #include <Vector3dStamped.pb.h>
+#include <Tdoa.pb.h>
 #include "CrtpUtils.h"
 #include "posixmq_wrapper.h"
 #include "crtp.h"
@@ -68,6 +69,7 @@ typedef const boost::shared_ptr<const gz_sensor_msgs::MagneticField> MagneticFie
 typedef const boost::shared_ptr<const gz_sensor_msgs::FluidPressure> FluidPressureMsgPtr;
 typedef const boost::shared_ptr<const gz_geometry_msgs::Vector3dStamped> LpsMsgPtr;
 typedef const boost::shared_ptr<const multi_ranger_sensor_data::msgs::MrSensorData> MrMsgPtr;
+typedef const boost::shared_ptr<const gz_sensor_msgs::Tdoa> TdoaMsgPtr;
 
 static const std::string defaultNamespace = "";
 static const std::string motorVelocityReferencePubTopic = "/gazebo/command/motor_speed";
@@ -76,6 +78,7 @@ static const std::string magneticFieldTopic = "/gazebo/magnetic_field";
 static const std::string fluidPressureTopic = "/gazebo/air_pressure";
 static const std::string lpsTopic = "/gazebo/lps";
 static const std::string mrTopic = "/gazebo/mr";
+static const std::string tdoaTopic = "/gazebo/tdoa";
 static const std::string rxIpcCrtpQueueNameBase = "/rxgazebocrtpmq";
 static const std::string txIpcCrtpQueueNameBase = "/txgazebocrtpmq";
 
@@ -90,6 +93,7 @@ public:
         fluid_pressure_topic_(fluidPressureTopic),
         lps_topic_(lpsTopic),
         mr_topic_(mrTopic),
+        tdoa_topic_(tdoaTopic),
         world_(nullptr),
         model_{},
         isInit(false),
@@ -111,6 +115,7 @@ private:
     std::string fluid_pressure_topic_;
     std::string lps_topic_;
     std::string mr_topic_;
+    std::string tdoa_topic_;
     std::string frame_id_;
     std::string link_name_;
 
@@ -152,6 +157,7 @@ private:
     void FluidPressureCallback(FluidPressureMsgPtr& press_msg);
     void LpsCallback(LpsMsgPtr& lps_msg);
     void MrCallback(MrMsgPtr& mr_msg);
+    void TdoaCallback(TdoaMsgPtr& tdoa_msg);
 
     // mutex and messages for motors command
     gz_mav_msgs::CommandMotorSpeed m_motor_speed;
@@ -178,6 +184,7 @@ private:
     gazebo::transport::SubscriberPtr fluid_pressure_sub_;
     gazebo::transport::SubscriberPtr lps_sub_;
     gazebo::transport::SubscriberPtr mr_sub_;
+    gazebo::transport::SubscriberPtr tdoa_sub_;
 
     int getCrazyflieNumberFromNamespace();
 
