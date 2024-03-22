@@ -48,7 +48,7 @@
     parent_link="base_link"
     imu_topic="${imu_topic}"
     mass_imu_sensor="0.00001"
-    rate="500"
+    rate="1000"
     gyroscope_noise_density="1.7667e-4"
     gyroscope_random_walk="9.2542e-06"
     gyroscope_bias_correlation_time="1000.0"
